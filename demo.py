@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 import numpy as np
 from math import cos, sin
 
-green = (0, 255, 0)
+green = (1, 255, 1)
 
 def show(image):
     # Figure size in inches
@@ -18,7 +18,7 @@ def overlay_mask(mask, image):
 	#make the mask rgb
     rgb_mask = cv2.cvtColor(mask, cv2.COLOR_GRAY2RGB)
     #calculates the weightes sum of two arrays. in our case image arrays
-    #input, how much to weight each. 
+    #input, how much to weight each.
     #optional depth value set to 0 no need
     img = cv2.addWeighted(rgb_mask, 0.5, image, 0.5, 0)
     return img
@@ -26,10 +26,10 @@ def overlay_mask(mask, image):
 def find_biggest_contour(image):
     # Copy
     image = image.copy()
-    #input, gives all the contours, contour approximation compresses horizontal, 
-    #vertical, and diagonal segments and leaves only their end points. For example, 
+    #input, gives all the contours, contour approximation compresses horizontal,
+    #vertical, and diagonal segments and leaves only their end points. For example,
     #an up-right rectangular contour is encoded with 4 points.
-    #Optional output vector, containing information about the image topology. 
+    #Optional output vector, containing information about the image topology.
     #It has as many elements as the number of contours.
     #we dont need it
     contours, hierarchy = cv2.findContours(image, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
@@ -52,10 +52,10 @@ def circle_contour(image, contour):
     return image_with_ellipse
 
 def find_strawberry(image):
-    #RGB stands for Red Green Blue. Most often, an RGB color is stored 
-    #in a structure or unsigned integer with Blue occupying the least 
-    #significant “area” (a byte in 32-bit and 24-bit formats), Green the 
-    #second least, and Red the third least. BGR is the same, except the 
+    #RGB stands for Red Green Blue. Most often, an RGB color is stored
+    #in a structure or unsigned integer with Blue occupying the least
+    #significant “area” (a byte in 32-bit and 24-bit formats), Green the
+    #second least, and Red the third least. BGR is the same, except the
     #order of areas is reversed. Red occupies the least significant area,
     # Green the second (still), and Blue the third.
     # we'll be manipulating pixels directly
@@ -69,7 +69,7 @@ def find_strawberry(image):
     scale = 700/max_dimension
     #resize it. same width and hieght none since output is 'image'.
     image = cv2.resize(image, None, fx=scale, fy=scale)
-    
+
     #we want to eliminate noise from our image. clean. smooth colors without
     #dots
     # Blurs an image using a Gaussian filter. input, kernel size, how much to filter, empty)
@@ -101,8 +101,8 @@ def find_strawberry(image):
     #we want to circle our strawberry so we'll circle it with an ellipse
     #with a shape of 15x15
     kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (15, 15))
-    #morph the image. closing operation Dilation followed by Erosion. 
-    #It is useful in closing small holes inside the foreground objects, 
+    #morph the image. closing operation Dilation followed by Erosion.
+    #It is useful in closing small holes inside the foreground objects,
     #or small black points on the object.
     mask_closed = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
     #erosion followed by dilation. It is useful in removing noise
@@ -120,10 +120,10 @@ def find_strawberry(image):
     #circle the biggest one
     circled = circle_contour(overlay, big_strawberry_contour)
     show(circled)
-    
+
     #we're done, convert back to original color scheme
     bgr = cv2.cvtColor(circled, cv2.COLOR_RGB2BGR)
-    
+
     return bgr
 
 #read the image
